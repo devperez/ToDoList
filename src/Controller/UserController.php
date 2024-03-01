@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\PasswordHasher\PasswordHasherInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UserController extends AbstractController
@@ -23,7 +23,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/create', name: 'user_create')]
-    public function createAction(Request $request, EntityManagerInterface $emi, PasswordHasherInterface $passwordHasher)
+    public function createAction(Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -32,7 +32,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            $password = $passwordHasher->encodePassword($user, $user->getPassword());
+            $password = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
 
             $emi->persist($user);
@@ -47,14 +47,14 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}/edit', name: 'user_edit')]
-    public function editAction(User $user, Request $request, EntityManagerInterface $emi, PasswordHasherInterface $passwordHasher)
+    public function editAction(User $user, Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher)
     {
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $passwordHasher->encodePassword($user, $user->getPassword());
+            $password = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
 
             $emi->flush();
