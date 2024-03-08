@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use DateTimeImmutable;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,9 +21,10 @@ class TaskController extends AbstractController
         return $this->render('task/list.html.twig', compact('tasks'));
     }
 
-    #[Route('/tasks/create', name: 'task_create')]
+    #[Route('/tasks/create', name: 'task_create', defaults:['role' => 'ROLE_USER'])]
     public function createAction(Request $request, EntityManagerInterface $emi)
     {
+        $user = $this->getUser();
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
@@ -30,6 +32,9 @@ class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) 
         {
+            $task->setCreatedAt(new DateTimeImmutable());
+            $task->setIsDone(0);
+            $task->setUser($user);
             $emi->persist($task);
             $emi->flush();
 
