@@ -21,7 +21,7 @@ class TaskController extends AbstractController
         return $this->render('task/list.html.twig', compact('tasks'));
     }
 
-    #[Route('/tasks/create', name: 'task_create', defaults:['role' => 'ROLE_USER'])]
+    #[Route('/tasks/create', name: 'task_create')]
     public function createAction(Request $request, EntityManagerInterface $emi)
     {
         $user = $this->getUser();
