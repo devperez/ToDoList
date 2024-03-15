@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\Form;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserTypeTest extends WebTestCase
@@ -20,5 +21,13 @@ class UserTypeTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('div.alert-success', 'L\'utilisateur a bien été ajouté.');
+    }
+
+    protected function tearDown(): void
+    {
+        $em = self::$kernel->getContainer()->get('doctrine')->getManager();
+        $em->getConnection()->executeQuery('DELETE FROM `task`');
+        $em->getConnection()->executeQuery('DELETE FROM `user`');
+        self::ensureKernelShutdown();
     }
 }
