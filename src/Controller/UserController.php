@@ -11,15 +11,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
-    public function list_Action(UserRepository $userRepository): Response
+    public function list_Action(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
 
-        return $this->render('user/list.html.twig', compact('users'));
+        // Results pagination
+        $pagination = $paginator->paginate(
+            $users,
+            $request->query->getInt('page', 1), // Page number
+            10 // Number of elements per page
+        );
+
+        return $this->render('user/list.html.twig', compact('pagination'));
     }
 
     #[Route('/users/create', name: 'user_create')]
@@ -40,7 +49,7 @@ class UserController extends AbstractController
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
-            return $this->redirectToRoute('user_list');
+            //return $this->redirectToRoute('user_list');
         }
 
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);

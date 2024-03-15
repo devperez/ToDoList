@@ -49,6 +49,13 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
     public function editAction(Task $task, Request $request, EntityManagerInterface $emi)
     {
+        $user = $this->getUser();
+        $taskOwner = $task->getUser();
+
+        if($taskOwner !== $user)
+        {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas le propriétaire de cette tâche.');
+        }
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);

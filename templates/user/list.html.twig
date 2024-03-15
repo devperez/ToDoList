@@ -5,7 +5,7 @@
 {% block header_title %}<h1>Liste des utilisateurs</h1>{% endblock %}
 
 {% block body %}
-    {% if users|length == 0 %}
+    {% if pagination|length == 0 %}
         <div class="alert alert-warning" role="alert">
             Il n'y a pas encore d'utilisateur enregistré. <a href="{{ path('user_create') }}" class="btn btn-warning pull-right">Créer un utilisateur</a>
         </div>
@@ -21,7 +21,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for user in users %}
+                {% for user in pagination %}
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
                         <td>{{ user.username }}</td>
@@ -33,6 +33,7 @@
                 {% endfor %}
                 </tbody>
             </table>
+            {{ knp_pagination_render(pagination) }}
         </div>
     {% endif %}
 {% endblock %}
