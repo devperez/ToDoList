@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\Form;
+namespace App\Tests\integration\Form;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
