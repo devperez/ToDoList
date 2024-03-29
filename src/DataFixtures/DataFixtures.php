@@ -2,11 +2,13 @@
 
 namespace App\DataFixtures;
 
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
+use App\Entity\Task;
 use App\Entity\User;
+use DateTimeImmutable;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 
-class UserFixtures extends Fixture
+class DataFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
@@ -35,5 +37,19 @@ class UserFixtures extends Fixture
         $manager->persist($userAnonymous);
 
         $manager->flush();
+
+        // Création de plusieurs tâches
+        for ($i = 0; $i < 10; $i++)
+        {
+            $task = new Task();
+            $task->setTitle('title'.$i);
+            $task->setContent('content'.$i);
+            $task->setUser($userUser);
+            $task->setCreatedAt(new DateTimeImmutable());
+            $task->setIsDone(0);
+        
+            $manager->persist($task);
+            $manager->flush();
+        }
     }
 }
