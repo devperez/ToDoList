@@ -14,7 +14,7 @@ class DataFixtures extends Fixture
     {
         // Création de l'utilisateur admin
         $userAdmin = new User();
-        $userAdmin->setUsername('userAdmin');
+        $userAdmin->setUsername('testAdmin');
         $userAdmin->setEmail('userAdmin@example.com');
         $userAdmin->setRoles(['ROLE_ADMIN']);
         $userAdmin->setPassword(password_hash('123456', PASSWORD_BCRYPT));
@@ -22,7 +22,7 @@ class DataFixtures extends Fixture
 
         // Création de l'utilisateur user
         $userUser = new User();
-        $userUser->setUsername('userUser');
+        $userUser->setUsername('testUser');
         $userUser->setEmail('userUser@example.com');
         $userUser->setRoles(['ROLE_USER']);
         $userUser->setPassword(password_hash('123456', PASSWORD_BCRYPT));

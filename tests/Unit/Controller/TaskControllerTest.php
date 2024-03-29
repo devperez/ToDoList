@@ -4,22 +4,36 @@ namespace App\tests\Unit\Controller;
 
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerTest extends WebTestCase
 {
+    private $client;
+
+    protected function setUp(): void
+    {
+        $this->client = self::createClient();
+    }
+
+    public function loginWithUser(): void
+    {
+        $crawler = $this->client->request('GET', '/login');
+        $form = $crawler->selectButton('Se connecter')->form();
+        $this->client->submit($form, ['_username' => 'testUser', '_password' => '123456']);
+    }
+
     public function testCreateAction()
     {
-        $client = static::createClient();
         $taskRepository = static::getContainer()->get(TaskRepository::class);
 
-        $client->request('GET', '/tasks/create');
+        $this->client->request('GET', '/tasks/create');
 
-        $client->submitForm('Ajouter', [
+        $this->client->submitForm('Ajouter', [
             'task[title]' => 'Title',
             'task[content]' => 'Content',
         ]);
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('div.alert-success', 'La tâche a bien été ajoutée.');
 
@@ -29,25 +43,21 @@ class TaskControllerTest extends WebTestCase
 
     public function testEditAction()
     {
-        $client = static::createClient();
-        $userRepository = static::getContainer()->get(UserRepository::class);
         $taskRepository = static::getContainer()->get(TaskRepository::class);
-
-        // Simulation d'un utilisateur connecté
-        $testUser = $userRepository->findOneBy(['username' => 'userUser']);
-        if (!$testUser) {
-            throw new \Exception("L'utilisateur n'a pas été trouvé dans la base de données de test.");
+        $user = $this->loginWithUser();
+        if(!$user)
+        {
+            throw new Exception('Aucun utilisateur connecté');
         }
-        $client->loginUser($testUser);
 
         // Récupère une tâche existante pour l'édition
-        $task = $taskRepository->findOneBy(['user' => $testUser]);
-
+        $task = $taskRepository->findOneBy(['user_id' => $user->getId()]);
+        
         // Simulation d'une requête GET pour afficher le formulaire d'édition
-        $client->request('GET', '/tasks/' . $task->getId() . '/edit');
+        $this->client->request('GET', '/tasks/' . $task->getId() . '/edit');
 
         // Sélectionne le formulaire d'édition et soumet les données modifiées
-        $client->submitForm('submit', [
+        $this->client->submitForm('submit', [
             'task[title]' => 'Nouveau titre',
             'task[content]' => 'Nouveau contenu',
         ]);
