@@ -15,7 +15,7 @@ class UserTypeTest extends WebTestCase
         $form['user[email]'] = 'test@example.com';
         $form['user[password][first]'] = 'password';
         $form['user[password][second]'] = 'password';
-        $form['user[username]'] = 'UnitTest';
+        $form['user[username]'] = 'Test';
 
         $client->submit($form);
 

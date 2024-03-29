@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Form\TaskType;
 use DateTimeImmutable;
 use App\Repository\TaskRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,9 +23,12 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/create', name: 'task_create')]
-    public function createAction(Request $request, EntityManagerInterface $emi)
+    public function createAction(Request $request, EntityManagerInterface $emi, UserRepository $userRepository)
     {
         $user = $this->getUser();
+        if(!$user){
+            $user = $userRepository->findOneByUsername('userAnonymous');
+        }
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
@@ -38,7 +42,7 @@ class TaskController extends AbstractController
             $emi->persist($task);
             $emi->flush();
 
-            $this->addFlash('success', 'La tâche a été bien été ajoutée.');
+            $this->addFlash('success', 'La tâche a bien été ajoutée.');
 
             return $this->redirectToRoute('task_list');
         }
