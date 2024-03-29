@@ -3,7 +3,6 @@
 namespace App\tests\Unit\Controller;
 
 use App\Repository\TaskRepository;
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerTest extends WebTestCase
@@ -12,12 +11,8 @@ class TaskControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $taskRepository = static::getContainer()->get(TaskRepository::class);
-        //$userRepository = static::getContainer()->get(UserRepository::class);
 
-        //$testUser = $userRepository->findOneByUsername('userAnonymous');
-        //$client->loginUser($testUser);
-
-        $crawler = $client->request('GET', '/tasks/create');
+        $client->request('GET', '/tasks/create');
 
         $client->submitForm('Ajouter', [
             'task[title]' => 'Title',
@@ -29,5 +24,13 @@ class TaskControllerTest extends WebTestCase
 
         $task = $taskRepository->findOneBy(['content' => 'Content']);
         $this->assertNotNull($task);
+    }
+
+    protected function tearDown(): void
+    {
+        $em = self::$kernel->getContainer()->get('doctrine')->getManager();
+        $em->getConnection()->executeQuery('DELETE FROM `task`');
+        $em->getConnection()->executeQuery('DELETE FROM `user`');
+        self::ensureKernelShutdown();
     }
 }
