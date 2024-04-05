@@ -10,8 +10,11 @@ use App\Controller\TaskController;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 
 class TaskControllerTest extends WebTestCase
 {
@@ -24,7 +27,7 @@ class TaskControllerTest extends WebTestCase
         $this->manager = static::getContainer()->get(EntityManagerInterface::class);
     }
 
-    public function createUsersAndTasks(): void
+    public function createUsersAndTasks(): array
     {
         $user = new User();
         $user->setUsername('testUser');
@@ -57,6 +60,7 @@ class TaskControllerTest extends WebTestCase
         $this->manager->persist($task2);
 
         $this->manager->flush();
+        return [$user, $task];
     }
 
     public function testCreateAction()
@@ -114,7 +118,8 @@ class TaskControllerTest extends WebTestCase
         $taskRepository = static::getContainer()->get(TaskRepository::class);
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        $this->createUsersAndTasks();
+        [,$task] = $this->createUsersAndTasks();
+        
         $user = $userRepository->findOneBy(['username' => 'testUser']);
         $this->client->loginUser($user);
         // On crée une instance du contrôleur
