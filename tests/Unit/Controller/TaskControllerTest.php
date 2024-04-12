@@ -6,15 +6,10 @@ use Exception;
 use App\Entity\Task;
 use App\Entity\User;
 use DateTimeImmutable;
-use App\Controller\TaskController;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 
 class TaskControllerTest extends WebTestCase
 {
@@ -35,6 +30,13 @@ class TaskControllerTest extends WebTestCase
         $user->setRoles(['ROLE_USER']);
         $user->setPassword(password_hash('123456', PASSWORD_BCRYPT));
         $this->manager->persist($user);
+
+        $user2 = new User();
+        $user2->setUsername('testUser2');
+        $user2->setEmail('userUser2@example.com');
+        $user2->setRoles(['ROLE_USER']);
+        $user2->setPassword(password_hash('123456', PASSWORD_BCRYPT));
+        $this->manager->persist($user2);
 
         $userAnonymous = new User();
         $userAnonymous->setUsername('userAnonymous');
@@ -60,7 +62,7 @@ class TaskControllerTest extends WebTestCase
         $this->manager->persist($task2);
 
         $this->manager->flush();
-        return [$user, $task];
+        return [$user2, $task];
     }
 
     public function testCreateAction()
@@ -88,18 +90,17 @@ class TaskControllerTest extends WebTestCase
         $this->createUsersAndTasks();
         $user = $userRepository->findOneBy(['username' => 'testUser']);
         $this->client->loginUser($user);
-        if(!$user)
-        {
+        if (!$user) {
             throw new Exception('Aucun utilisateur connecté');
         }
 
-        // Récupère une tâche existante pour l'édition
+        // Fetch an existing task to edit
         $task = $taskRepository->findOneBy(['user' => $user->getId()]);
-        
-        // Simulation d'une requête GET pour afficher le formulaire d'édition
+
+        // Mock a GET request to display the edit form
         $this->client->request('GET', '/tasks/' . $task->getId() . '/edit');
 
-        // Sélectionne le formulaire d'édition et soumet les données modifiées
+        // Select the edit form and submits modified data
         $this->client->submitForm('Modifier', [
             'task[title]' => 'Nouveau titre',
             'task[content]' => 'Nouveau contenu',
@@ -107,46 +108,42 @@ class TaskControllerTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        // Vérifie que la tâche a été modifiée dans la base de données
+        // Check the task has been modified in DB
         $modifiedTask = $taskRepository->find($task->getId());
         $this->assertEquals('Nouveau titre', $modifiedTask->getTitle());
         $this->assertEquals('Nouveau contenu', $modifiedTask->getContent());
     }
 
+    public function testEditActionUnauthorized()
+    {
+        [$user2,$task] = $this->createUsersAndTasks();
+        // Log in user2
+        $this->client->loginUser($user2);
+        // Mock a GET request to display the edit form
+        $this->client->request('GET', '/tasks/' . $task->getId() . '/edit');
+        // Assert we get a 403 response
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testToggleTaskAction()
     {
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        $userRepository = static::getContainer()->get(UserRepository::class);
-
+        $entityManager = static::getContainer()->get('doctrine')->getManager();
         [,$task] = $this->createUsersAndTasks();
-        
-        $user = $userRepository->findOneBy(['username' => 'testUser']);
-        $this->client->loginUser($user);
-        // On crée une instance du contrôleur
-        $controller = static::getContainer()->get(TaskController::class);
-        if(!$controller)
-        {
-            throw new Exception('Contrôleur non trouvé.');
-        }
-        // On récupère une tâche
-        $task = $taskRepository->findOneBy(['content' => 'content2']);
-        if(!$task)
-        {
-            throw new Exception('Tâche non trouvée.');
-        }
-        //On appelle la méthode
-        $response = $controller->toggleTaskAction($task, $this->manager);
-        if(!$response)
-        {
-            throw new Exception('Le contrôleur n\'est pas appelé correctement.');
-        }
-        // On vérifie si la tâche est marquée comme faite
+
+        // Mock a request on the toggleTaskAction URL with the task id
+        $this->client->request('GET', '/tasks/' . $task->getId() . '/toggle');
+
+        // Check the response is a redirection towards the task list
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // Reload the task from the database
+        $task = $entityManager->getRepository(Task::class)->find($task->getId());
+
+        // Check the task is now set as done
         $this->assertTrue($task->isDone());
 
-        // On vérifie la redirection vers la route 'task_list'
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('task_list', $this->client->getRequest()->attributes->get('_route'));
+        $this->assertSelectorTextContains('div.alert-success', 'La tâche a bien été mise à jour.');
     }
 
     public function testDeleteTaskAction()

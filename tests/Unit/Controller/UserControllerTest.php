@@ -42,24 +42,24 @@ class UserControllerTest extends WebTestCase
 
     public function testListAction()
     {
-        // Création des utilisateurs
+        // Create users
         $this->createUsers();
-        // On récupère la page
+        // Fetch the page
         $this->client->request('GET', '/users');
-        // On vérifie que la réponse est bonne
+        // Check the response is ok
         $this->assertResponseIsSuccessful();
-        // On vérifie qu'on a bien une instance de Response
+        // Check we have a response instance
         $this->assertInstanceOf(Response::class, $this->client->getResponse());
-        // On vérirfie que la vue 'user/list.html.twig' est bien rendue
+        // Check the view 'user/list.html.twig' is rendered
         $this->assertSelectorTextContains('h1', 'Liste des utilisateurs');
     }
 
     public function testCreateAction()
     {
         $userRepository = static::getContainer()->get(UserRepository::class);
-        //On fait une requête GET sur la page du formulaire
+        // Mock a GET request on the form page
         $crawler = $this->client->request('GET', '/users/create');
-        //On soumet le formulaire avec des données
+        // Submit the form with data
         $form = $crawler->selectButton('Ajouter')->form();
         $form['user[username]'] = 'boby';
         $form['user[password][first]'] = 'azerty';
@@ -67,44 +67,44 @@ class UserControllerTest extends WebTestCase
         $form['user[email]'] = 'newUser@example.org';
 
         $this->client->submit($form);
-        // On vérifie que la réponse est ok
+        // Check the response is ok
         $this->assertResponseIsSuccessful();
-        // On vérifie l'affichage du message de succès
+        // Check the display of the flash message
         $this->assertSelectorTextContains('div.alert-success', 'L\'utilisateur a bien été ajouté.');
-        // On vérifie l'insertion en BDD
+        // Check the DB storage
         $user = $userRepository->findOneBy(['email' => 'newUser@example.org']);
         $this->assertNotNull($user);
     }
 
     public function testEditAction()
     {
-        // On crée des utilisateurs
+        // Create users
         $this->createUsers();
-        // On récupère l'utilisateur userAnonymous
+        // Fetch the userAnonymous user
         $userRepository = static::getContainer()->get(UserRepository::class);
         $user = $userRepository->findOneBy(['email' => 'userAnonymous@example.com']);
         if (!$user) {
             throw new Exception('Utilisateur non trouvé.');
         }
-        // On fait une requête vers la page d'édition
+        // Mock a GET request on the edit page
         $this->client->request('GET', '/users/' . $user->getId() . '/edit');
-        // On vérifie que la réponse est ok
+        // Check the response is ok
         $this->assertResponseIsSuccessful();
-        // On soumet le formulaire avec des données
+        // Submit the form with data
         $this->client->submitForm('Modifier', [
             'user[email]' => 'nouveau@email.com',
             'user[password][first]' => '123456',
             'user[password][second]' => '123456',
         ]);
-        // On vérifie qu'il y a bien une redirection
+        // Check we are redirected
         $this->assertTrue($this->client->getResponse()->isRedirect());
-        // On suit la redirection
+        // Follow redirection
         $this->client->followRedirect();
-        // On vérifie que la route est bien 'user_list'
+        // Check the route is 'user_list'
         $this->assertEquals('user_list', $this->client->getRequest()->attributes->get('_route'));
-        // On récupère l'utilisateur mis à jour
+        // Fetch the updated user
         $userUpdated = $userRepository->find($user->getId());
-        // On vérifie que son mail a bien été mis à jour
+        // Check his mail was updated
         $this->assertEquals('nouveau@email.com', $userUpdated->getEmail());
     }
 

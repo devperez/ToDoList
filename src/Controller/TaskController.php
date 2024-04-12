@@ -85,7 +85,7 @@ class TaskController extends AbstractController
         $task->setIsDone(!$task->isDone());
         $emi->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $this->addFlash('success', 'La tâche a bien été mise à jour.');
 
         return $this->redirectToRoute('task_list');
     }
