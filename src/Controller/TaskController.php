@@ -56,7 +56,7 @@ class TaskController extends AbstractController
         $user = $this->getUser();
         $taskOwner = $task->getUser();
 
-        if($taskOwner !== $user)
+        if($taskOwner !== $user && !$this->isGranted('ROLE_ADMIN'))
         {
             throw $this->createAccessDeniedException('Vous n\'êtes pas le propriétaire de cette tâche.');
         }
