@@ -23,7 +23,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/create', name: 'task_create')]
-    public function createAction(Request $request, EntityManagerInterface $emi, UserRepository $userRepository)
+    public function createAction(Request $request, EntityManagerInterface $emi, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
         if(!$user){
@@ -51,7 +51,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function editAction(Task $task, Request $request, EntityManagerInterface $emi)
+    public function editAction(Task $task, Request $request, EntityManagerInterface $emi): Response
     {
         $user = $this->getUser();
         $taskOwner = $task->getUser();
@@ -80,7 +80,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(Task $task, EntityManagerInterface $emi)
+    public function toggleTaskAction(Task $task, EntityManagerInterface $emi): Response
     {
         $task->setIsDone(!$task->isDone());
         $emi->flush();
@@ -91,7 +91,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(Task $task, EntityManagerInterface $emi)
+    public function deleteTaskAction(Task $task, EntityManagerInterface $emi): Response
     {
         $emi->remove($task);
         $emi->flush();

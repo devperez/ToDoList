@@ -6,6 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class DefaultController extends AbstractController
 {
     #[Route('/', name: 'homepage')]

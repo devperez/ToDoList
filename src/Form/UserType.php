@@ -32,7 +32,7 @@ class UserType extends AbstractType
                     'Administrateur' => 'ROLE_ADMIN',
                 ],
                 'multiple' => true,
-                'expanded' => true, // Radio button style
+                'expanded' => true,
             ])
         ;
     }
