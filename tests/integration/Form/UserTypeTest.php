@@ -1,7 +1,6 @@
 <?php
 namespace App\Tests\integration\Form;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserTypeTest extends WebTestCase
