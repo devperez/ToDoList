@@ -19,16 +19,27 @@ class UserController extends AbstractController
     #[Route('/users', name: 'user_list')]
     public function list_Action(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
     {
-        $users = $userRepository->findAll();
+        $user = $this->getUser();
+        if ($user)
+        {
+            if ($user->getRoles()[0] == "ROLE_ADMIN")
+            {
+                $users = $userRepository->findAll();
 
-        // Results pagination
-        $pagination = $paginator->paginate(
-            $users,
-            $request->query->getInt('page', 1), // Page number
-            10 // Number of elements per page
-        );
-
-        return $this->render('user/list.html.twig', compact('pagination'));
+                // Results pagination
+                $pagination = $paginator->paginate(
+                    $users,
+                    $request->query->getInt('page', 1), // Page number
+                    10 // Number of elements per page
+                );
+                return $this->render('user/list.html.twig', compact('pagination'));
+            }
+        } else {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page.');
+            return $this->render('default/index.html.twig');
+        }
+        $this->addFlash('error', 'Vous n\'avez pas les droits nécessaires pour accéder à cete page.');
+        return $this->render('default/index.html.twig');
     }
 
     #[Route('/users/create', name: 'user_create')]
