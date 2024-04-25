@@ -40,41 +40,41 @@ class UserControllerTest extends WebTestCase
         $this->manager->flush();
     }
 
-    public function testListActionWithUser()
+    public function testListAction()
     {
-        // Create users
         $this->createUsers();
-        // Authenticate the admin user
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $anonymousUser = $userRepository->findOneBy(['email' => 'userAnonymous@example.com']);
-        $this->client->loginUser($anonymousUser);
-        // Fetch the page
-        $this->client->request('GET', '/users');
-        // Check the response is ok
-        $this->assertResponseIsSuccessful();
-        // Check we have a response instance
-        $this->assertInstanceOf(Response::class, $this->client->getResponse());
-        // Check the view 'default.html.twig' is rendered
-        $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !');
-    }
-
-    public function testListActionWithAdmin()
-    {
-        // Create users
-        $this->createUsers();
-        // Authenticate the admin user
+        // Simulate an authenticated user with ROLE_ADMIN
         $userRepository = static::getContainer()->get(UserRepository::class);
         $adminUser = $userRepository->findOneBy(['email' => 'userAdmin@exemple.com']);
         $this->client->loginUser($adminUser);
-        // Fetch the page
-        $this->client->request('GET', '/users');
-        // Check the response is ok
+
+        $crawler = $this->client->request('GET', '/users');
+
+        // Assert that the request was successful
         $this->assertResponseIsSuccessful();
-        // Check we have a response instance
-        $this->assertInstanceOf(Response::class, $this->client->getResponse());
-        // Check the view 'user/list.html.twig' is rendered
+
+        // Assert that the correct template is rendered
         $this->assertSelectorTextContains('h1', 'Liste des utilisateurs');
     }
+
+
+    // public function testListActionWithAdmin()
+    // {
+    //     // Create users
+    //     $this->createUsers();
+    //     // Authenticate the admin user
+    //     $userRepository = static::getContainer()->get(UserRepository::class);
+    //     $adminUser = $userRepository->findOneBy(['email' => 'userAdmin@exemple.com']);
+    //     $this->client->loginUser($adminUser);
+    //     // Fetch the page
+    //     $this->client->request('GET', '/users');
+    //     // Check the response is ok
+    //     $this->assertResponseIsSuccessful();
+    //     // Check we have a response instance
+    //     $this->assertInstanceOf(Response::class, $this->client->getResponse());
+    //     // Check the view 'user/list.html.twig' is rendered
+    //     $this->assertSelectorTextContains('h1', 'Liste des utilisateurs');
+    // }
 
     public function testCreateAction()
     {

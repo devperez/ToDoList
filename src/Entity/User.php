@@ -85,9 +85,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->roles;
     }
 
-    public function setRoles(array $role) 
+    public function setRoles(array $role) : self
     {
-        $this->roles = $role;
+         // Check if chosen role is ROLE_ADMIN or ROLE_USER
+        $role = $role[0] ?? null; // Fetch the first role or null
+            if ($role !== 'ROLE_ADMIN' && $role !== 'ROLE_USER') {
+                throw new \InvalidArgumentException("Invalid role: $role. Allowed roles are ROLE_ADMIN or ROLE_USER.");
+            }
+
+        // Define the role
+        $this->roles = [$role];
+
         return $this;
     }
 

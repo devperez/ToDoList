@@ -21,31 +21,18 @@ class UserController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function list_Action(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
     {
-        $user = $this->getUser();
-        if ($user)
-        {
-            if ($user->getRoles()[0] == "ROLE_ADMIN")
-            {
-                $users = $userRepository->findAll();
-
-                // Results pagination
-                $pagination = $paginator->paginate(
-                    $users,
-                    $request->query->getInt('page', 1), // Page number
-                    10 // Number of elements per page
-                );
-                return $this->render('user/list.html.twig', compact('pagination'));
-            }
-        } else {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page.');
-            return $this->render('default/index.html.twig');
-        }
-        $this->addFlash('error', 'Vous n\'avez pas les droits nécessaires pour accéder à cette page.');
-        return $this->render('default/index.html.twig');
+        $users = $userRepository->findAll();
+        // Results pagination
+        $pagination = $paginator->paginate(
+            $users,
+            $request->query->getInt('page', 1), // Page number
+            10 // Number of elements per page
+        );
+        return $this->render('user/list.html.twig', compact('pagination'));
     }
 
     #[Route('/users/create', name: 'user_create')]
-    public function createAction(Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): response
+    public function createAction(Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
