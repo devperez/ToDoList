@@ -8,6 +8,9 @@ use DateTimeImmutable;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class DataFixtures extends Fixture
 {
     public function load(ObjectManager $manager)

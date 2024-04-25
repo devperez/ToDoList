@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class TaskController extends AbstractController
 {
     #[Route('/tasks', name: 'task_list')]

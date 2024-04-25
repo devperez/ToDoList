@@ -7,6 +7,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
+
+/**
+ * @psalm-suppress UnusedClass
+ */
 class Task
 {
     #[ORM\Id]
@@ -30,11 +34,17 @@ class Task
     #[ORM\Column]
     private bool $isDone;
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -47,6 +57,9 @@ class Task
         return $this;
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getTitle(): ?string
     {
         return $this->title;
@@ -59,6 +72,9 @@ class Task
         return $this;
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getContent(): ?string
     {
         return $this->content;

@@ -14,7 +14,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-
+/**
+ * @psalm-suppress UnusedClass
+ */
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]

@@ -39,11 +39,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tasks = new ArrayCollection();
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getUsername(): ?string
     {
         return $this->username;
@@ -68,6 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getEmail(): ?string
     {
         return $this->email;
@@ -109,11 +118,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->username;
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function getTasks(): Collection
     {
         return $this->tasks;
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedMethod
+     */
     public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {
