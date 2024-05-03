@@ -17,14 +17,12 @@ To install ToDoList, follow these steps:
   git clone https://github.com/devperez/ToDoList.git
 ```
 
-2. Install dependencies:
-Once in the ToDoList folder :
+2. Once in the ToDoList folder, install the dependencies:
 ```bash
   composer install
 ```
 
-3. Create the data base:
-First, update your .env file with your own details, then :
+3. Update your .env file with your own details, then create the data base:
 ```bash
   php bin/console doctrine:database:create
 ```
