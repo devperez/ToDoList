@@ -40,11 +40,11 @@ class UserType extends AbstractType
             // Ajoutez un transformateur pour le champ 'roles'
             ->get('roles')
             ->addModelTransformer(new CallbackTransformer(
-                function ($rolesAsArray) {
+                function (array $rolesAsArray) {
                     // Convertit le tableau de rôles en une chaîne pour l'affichage
                     return count($rolesAsArray) ? $rolesAsArray[0] : null;
                 },
-                function ($rolesAsString) {
+                function (string $rolesAsString) {
                     // Convertit la chaîne de rôle en un tableau pour la soumission
                     return [$rolesAsString];
                 }

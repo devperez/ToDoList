@@ -30,6 +30,7 @@ class TaskController extends AbstractController
     {
         $user = $this->getUser();
         if(!$user){
+            /** @psalm-suppress UndefinedMagicMethod */
             $user = $userRepository->findOneByUsername('userAnonymous');
         }
         $task = new Task();
@@ -40,7 +41,7 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) 
         {
             $task->setCreatedAt(new DateTimeImmutable());
-            $task->setIsDone(0);
+            $task->setIsDone(false);
             $task->setUser($user);
             $emi->persist($task);
             $emi->flush();

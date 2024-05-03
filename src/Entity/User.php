@@ -131,6 +131,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function addTask(Task $task): self
     {
+        /** @psalm-suppress RedundantConditionGivenDocblockType */
         if (!$this->tasks->contains($task)) {
             $this->tasks[] = $task;
             $task->setUser($this);

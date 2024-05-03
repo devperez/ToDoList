@@ -49,7 +49,7 @@ class DataFixtures extends Fixture
             $task->setContent('content'.$i);
             $task->setUser($userUser);
             $task->setCreatedAt(new DateTimeImmutable());
-            $task->setIsDone(0);
+            $task->setIsDone(false);
         
             $manager->persist($task);
             $manager->flush();
