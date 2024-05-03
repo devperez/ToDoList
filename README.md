@@ -43,3 +43,7 @@ First, update your .env file with your own details, then :
 ```bash
   symfony serve
 ```
+
+## Before contributing
+
+Read the contrib.md file.
