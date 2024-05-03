@@ -47,3 +47,8 @@ First, update your .env file with your own details, then :
 ## Before contributing
 
 Read the contrib.md file.
+
+## Test coverage
+
+Once the project is up and running, you have access to the test coverage at this address :
+http://127.0.0.1:5500/coverage/
