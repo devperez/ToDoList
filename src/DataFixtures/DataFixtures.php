@@ -13,7 +13,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
  */
 class DataFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         // Création de l'utilisateur admin
         $userAdmin = new User();
