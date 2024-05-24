@@ -30,3 +30,13 @@ Contribution guide
         git commit -m "commit message"
         git push
     ```
+    3.4 Pull Request
+    Once your new branch is pushed, go to GitHub and select the repo's project.
+    Click on "Pull Request".
+    Then click on "New Pull Request".
+    Select the local branch you just pushed (newBranchName in this example) as source branch.
+    Select the main branch of the project as target branch.
+    Review the changes you made and click on "Create Pull Request".
+    Fill in the details of your Pull Request, give it a titla and a description.
+    Submit your Pull Request by clicking on "Create Pull Request".
+    Once submitted, your Pull Request will be reviewed. It will probably be commented or accepted and merged with the main branch.

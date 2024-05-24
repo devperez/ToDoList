@@ -44,7 +44,7 @@ To install ToDoList, follow these steps:
 
 ## Before contributing
 
-Read the contrib.md file.
+Read the [contrib.md](./contrib.md) file.
 
 ## Test coverage
 
