@@ -48,5 +48,5 @@ Read the [contrib.md](./contrib.md) file.
 
 ## Test coverage
 
-Once the project is up and running, you have access to the test coverage at this address :
+Once the project is up and running, you have access to the test coverage at this address : (you have to run the live server first)
 http://127.0.0.1:5500/coverage/
