@@ -37,7 +37,7 @@ Contribution guide
     - Select the local branch you just pushed (newBranchName in this example) as source branch.
     - Select the main branch of the project as target branch.
     - Review the changes you made and click on "Create Pull Request".
-    - Fill in the details of your Pull Request, give it a titla and a description.
+    - Fill in the details of your Pull Request, give it a title and a description.
     - Submit your Pull Request by clicking on "Create Pull Request".
 
 > Once submitted, your Pull Request will be reviewed. It will probably be commented or accepted and merged with the main branch.
