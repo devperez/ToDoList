@@ -19,14 +19,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class TaskController extends AbstractController
 {
     #[Route('/tasks', name: 'task_list')]
-    public function listAction(TaskRepository $taskRepository): Response
+    public function list(TaskRepository $taskRepository): Response
     {
         $tasks = $taskRepository->findAll();
         return $this->render('task/list.html.twig', compact('tasks'));
     }
 
     #[Route('/tasks/create', name: 'task_create')]
-    public function createAction(Request $request, EntityManagerInterface $emi, UserRepository $userRepository): Response
+    public function create(Request $request, EntityManagerInterface $emi, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
         if(!$user){
@@ -55,7 +55,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function editAction(Task $task, Request $request, EntityManagerInterface $emi): Response
+    public function edit(Task $task, Request $request, EntityManagerInterface $emi): Response
     {
         $user = $this->getUser();
         $taskOwner = $task->getUser();
@@ -84,7 +84,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(Task $task, EntityManagerInterface $emi): Response
+    public function toggleTask(Task $task, EntityManagerInterface $emi): Response
     {
         $task->setIsDone(!$task->isDone());
         $emi->flush();
@@ -95,7 +95,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(Task $task, EntityManagerInterface $emi): Response
+    public function deleteTask(Task $task, EntityManagerInterface $emi): Response
     {
         $emi->remove($task);
         $emi->flush();

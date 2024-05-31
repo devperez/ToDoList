@@ -21,7 +21,7 @@ class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
     #[IsGranted('ROLE_ADMIN')]
-    public function list_Action(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
+    public function list(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
         // Results pagination
@@ -34,7 +34,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/create', name: 'user_create')]
-    public function createAction(Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
+    public function create(Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -56,7 +56,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}/edit', name: 'user_edit')]
-    public function editAction(User $user, Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(User $user, Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(UserType::class, $user);
 
