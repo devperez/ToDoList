@@ -10,7 +10,6 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -20,9 +19,12 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function list(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
+    public function list_Action(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
     {
+        // The isGranted method automatically calls the voter's method voteOnAttribute.
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas le droit d\'accéder à cette page.');
+        }
         $users = $userRepository->findAll();
         // Results pagination
         $pagination = $paginator->paginate(
@@ -58,6 +60,11 @@ class UserController extends AbstractController
     #[Route('/users/{id}/edit', name: 'user_edit')]
     public function edit(User $user, Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
     {
+        // The isGranted method automatically calls the voter's method voteOnAttribute.
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous n\'avez pas le droit d\'accéder à cette page.');
+        }
+        
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
