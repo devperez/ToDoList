@@ -36,7 +36,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/create', name: 'user_create')]
-    public function createAction(Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
+    public function create(Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -58,7 +58,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/users/{id}/edit', name: 'user_edit')]
-    public function editAction(User $user, Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(User $user, Request $request, EntityManagerInterface $emi, UserPasswordHasherInterface $passwordHasher): Response
     {
         // The isGranted method automatically calls the voter's method voteOnAttribute.
         if (!$this->isGranted('ROLE_ADMIN')) {
