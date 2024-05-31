@@ -19,7 +19,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
-    public function list_Action(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
+    public function list(Request $request, PaginatorInterface $paginator, UserRepository $userRepository): Response
     {
         // The isGranted method automatically calls the voter's method voteOnAttribute.
         if (!$this->isGranted('ROLE_ADMIN')) {
